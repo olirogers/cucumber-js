@@ -11,16 +11,15 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function() {});
       };
       module.exports = cucumberSteps;
       """
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(scenario, callback) {
-          scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
-          callback();
+        this.Before(function() {
+          this.attach(new Buffer([100, 97, 116, 97]), 'image/png');
         });
       };
 
@@ -89,7 +88,7 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function() {});
       };
       module.exports = cucumberSteps;
       """
@@ -108,12 +107,10 @@ Feature: Attachments
             stream.push(new Buffer([100, 97, 116, 97]));
             stream.push(null);
 
-            scenario.attach(stream, 'image/png', function(error) {
-              callback(error);
-            });
+            this.attach(stream, 'image/png', callback);
           }
           else {
-            scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
+            this.attach(new Buffer([100, 97, 116, 97]), 'image/png');
             callback();
           }
         });
@@ -184,7 +181,7 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function() {});
       };
       module.exports = cucumberSteps;
       """
@@ -192,11 +189,8 @@ Feature: Attachments
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          scenario.attach("text");
-
-          runScenario(null, function(callback) {
-            callback();
-          });
+          this.attach("text");
+          runScenario();
         });
       };
 
@@ -274,7 +268,7 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function() {});
       };
       module.exports = cucumberSteps;
       """
@@ -282,9 +276,8 @@ Feature: Attachments
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          runScenario(null, function(callback) {
-            scenario.attach("text");
-            callback();
+          runScenario(null, function() {
+            this.attach("text");
           });
         });
       };
@@ -363,16 +356,15 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function() { });
       };
       module.exports = cucumberSteps;
       """
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(scenario, callback) {
-          scenario.attach("text");
-          callback();
+        this.Before(function() {
+          this.attach("text");
         });
       };
 
@@ -448,9 +440,8 @@ Feature: Attachments
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.After(function(scenario, callback) {
-          scenario.attach("text");
-          callback();
+        this.After(function() {
+          this.attach("text");
         });
       };
 
@@ -518,25 +509,11 @@ Feature: Attachments
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) {
-          var world = this;
-          world.scenario.attach("text");
-          callback();
+        this.Given(/^This step is passing$/, function() {
+          this.attach("text");
         });
       };
       module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
-      """
-      var hooks = function () {
-        this.Before(function(scenario, callback) {
-          var world = this;
-          world.scenario = scenario;
-          callback();
-        });
-      };
-
-      module.exports = hooks;
       """
     When I run cucumber.js with `-f json`
     Then it outputs this json:
