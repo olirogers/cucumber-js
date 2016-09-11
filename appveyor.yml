@@ -20,4 +20,4 @@ install:
 test_script:
   - node --version
   - npm --version
-  - npm run $env:test_script
+  - npm run %test_script%
